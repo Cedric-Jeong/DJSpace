@@ -12,12 +12,12 @@ import ViewTab    from '../components/ViewTab'
 
 const TABS = [
   { id: 'routine', label: '루틴' },
-  { id: 'home',    label: '홈' },
-  { id: 'memo',    label: '메모' },
+  { id: 'memo',    label: '홈' },
+  { id: 'view',    label: '보기' },
 ]
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState('home')
+  const [activeTab, setActiveTab] = useState('memo')
   const { userProfile } = useAuth()
   const navigate = useNavigate()
 
@@ -49,8 +49,8 @@ export default function Dashboard() {
       {/* 탭 콘텐츠 */}
       <main className="flex-1 overflow-y-auto pb-20">
         {activeTab === 'routine' && <RoutineTab />}
-        {activeTab === 'home'    && <MemoTab />}
-        {activeTab === 'memo'    && <ViewTab />}
+        {activeTab === 'memo'    && <MemoTab />}
+        {activeTab === 'view'    && <ViewTab />}
       </main>
 
       {/* 하단 탭 바 */}
