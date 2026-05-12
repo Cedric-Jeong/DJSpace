@@ -11,9 +11,9 @@ import MemoTab    from '../components/MemoTab'
 import ViewTab    from '../components/ViewTab'
 
 const TABS = [
-  { id: 'routine', label: '루틴',  icon: '✅' },
-  { id: 'memo',    label: '일기',  icon: '✏️' },
-  { id: 'view',    label: '보기',  icon: '💌' },
+  { id: 'routine', label: '루틴' },
+  { id: 'memo',    label: '홈' },
+  { id: 'view',    label: '보기' },
 ]
 
 export default function Dashboard() {
@@ -59,18 +59,17 @@ export default function Dashboard() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all ${
+            className={`flex-1 py-5 flex flex-col items-center justify-center transition-all relative ${
               activeTab === tab.id
-                ? 'text-diary-green transform scale-105'
+                ? 'text-diary-green'
                 : 'text-diary-green/30 hover:text-diary-green/60'
             }`}
           >
-            <span className="text-xl">{tab.icon}</span>
-            <span className={`text-[10px] font-bold uppercase tracking-wider ${activeTab === tab.id ? 'text-diary-green' : ''}`}>
+            <span className={`text-xs font-bold uppercase tracking-widest ${activeTab === tab.id ? 'text-diary-green' : ''}`}>
               {tab.label}
             </span>
             {activeTab === tab.id && (
-              <span className="absolute bottom-1 w-1 h-1 bg-diary-brown rounded-full" />
+              <span className="absolute bottom-2 w-1 h-1 bg-diary-brown rounded-full" />
             )}
           </button>
         ))}

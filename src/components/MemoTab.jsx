@@ -52,33 +52,39 @@ export default function MemoTab() {
 
   // 이 달의 메모 날짜 목록 가져오기
   useEffect(() => {
-    if (!currentUser || !userProfile) return
+    let isMounted = true;
+    if (!currentUser || !userProfile) return;
+
     async function loadMemoDates() {
       try {
-        // 복합 인덱스 문제 방지를 위해 작성자 필터링만 먼저 수행
-        // 나와 친구의 메모를 모두 가져와서 달력에 표시
+        const ids = [currentUser.uid, userProfile.friendId].filter(Boolean);
+        if (ids.length === 0) return;
+
         const q = query(
           collection(db, 'memos'),
-          where('authorId', 'in', [currentUser.uid, userProfile.friendId].filter(Boolean))
-        )
-        const snap = await getDocs(q)
+          where('authorId', 'in', ids)
+        );
+        const snap = await getDocs(q);
         
-        // 가져온 데이터에서 이번 달에 해당하는 날짜만 추출
-        const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1)
-        const end   = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0)
+        if (!isMounted) return;
+
+        const start = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+        const end   = new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 0);
         
         const dates = snap.docs
-          .map(d => d.data().date.toDate())
-          .filter(date => date >= start && date <= end)
-          .map(date => date.toDateString())
+          .map(d => d.data().date?.toDate())
+          .filter(date => date && date >= start && date <= end)
+          .map(date => date.toDateString());
 
-        setMemoDates([...new Set(dates)])
+        setMemoDates([...new Set(dates)]);
       } catch (err) {
-        console.error("메모 날짜 로드 실패:", err)
+        console.error("메모 날짜 로드 실패:", err);
       }
     }
-    loadMemoDates()
-  }, [currentUser, userProfile, selectedDate.getMonth()])
+
+    loadMemoDates();
+    return () => { isMounted = false; };
+  }, [currentUser, userProfile, selectedDate.getFullYear(), selectedDate.getMonth()]);
 
   async function saveMemo() {
     if (!content.trim()) return
