@@ -15,8 +15,40 @@ export default function MemoTab() {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [content,      setContent]      = useState('')
   const [memoDates,    setMemoDates]    = useState([])  // 메모가 있는 날짜들
+  const [loadingContent, setLoadingContent] = useState(false)
   const [saving,       setSaving]       = useState(false)
   const [savedMsg,     setSavedMsg]     = useState('')
+
+  // 선택한 날짜의 기존 메모 가져오기
+  useEffect(() => {
+    if (!currentUser) return
+    async function loadSelectedMemo() {
+      setLoadingContent(true)
+      setContent('') // 초기화
+      try {
+        const q = query(
+          collection(db, 'memos'),
+          where('authorId', '==', currentUser.uid)
+        )
+        const snap = await getDocs(q)
+        
+        // JS에서 날짜 비교 (시간 제외)
+        const targetDateStr = selectedDate.toDateString()
+        const existingMemo = snap.docs.find(d => 
+          d.data().date.toDate().toDateString() === targetDateStr
+        )
+
+        if (existingMemo) {
+          setContent(existingMemo.data().content)
+        }
+      } catch (err) {
+        console.error("메모 내용 로드 실패:", err)
+      } finally {
+        setLoadingContent(false)
+      }
+    }
+    loadSelectedMemo()
+  }, [currentUser, selectedDate])
 
   // 이 달의 메모 날짜 목록 가져오기
   useEffect(() => {
@@ -102,15 +134,16 @@ export default function MemoTab() {
         <textarea
           value={content}
           onChange={e => setContent(e.target.value)}
-          placeholder="오늘의 조각을 남겨보세요... 🌿"
+          placeholder={loadingContent ? "이전의 조각을 찾는 중..." : "오늘의 조각을 남겨보세요... 🌿"}
           rows={7}
-          className="w-full text-sm text-diary-dark resize-none focus:outline-none leading-relaxed placeholder-diary-green/20"
+          disabled={loadingContent}
+          className="w-full text-sm text-diary-dark resize-none focus:outline-none leading-relaxed placeholder-diary-green/20 disabled:bg-transparent"
         />
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-diary-green/5">
           <span className="text-xs text-diary-green/20">{content.length}자</span>
           <button
             onClick={saveMemo}
-            disabled={saving || !content.trim()}
+            disabled={saving || !content.trim() || loadingContent}
             className="bg-diary-green hover:bg-diary-leaf disabled:opacity-40 text-white text-sm font-medium px-5 py-2 rounded-xl transition-all shadow-sm active:scale-95"
           >
             {saving ? '기록 중...' : '기록하기'}
