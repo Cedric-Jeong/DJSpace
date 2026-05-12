@@ -31,9 +31,12 @@ export default function Dashboard() {
       {/* 헤더 */}
       <header className="bg-white/80 backdrop-blur-md border-b border-diary-green/5 px-4 py-5 flex items-center justify-between sticky top-0 z-10">
         <div>
-          <h1 className="font-bold text-diary-green text-xl tracking-tight">
+          <h1 className="font-bold text-diary-green text-xl tracking-tight leading-tight">
             우리들의 공간
           </h1>
+          <p className="text-[11px] text-diary-green/40 font-medium mt-0.5 ml-0.5">
+            {userProfile?.name ? `${userProfile.name}님의 숲` : '나의 숲'}
+          </p>
         </div>
         <button
           onClick={handleLogout}
