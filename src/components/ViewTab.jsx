@@ -17,32 +17,55 @@ export default function ViewTab() {
   const [saving,     setSaving]     = useState(false)
   const [commentMap, setCommentMap] = useState({})
 
+  // 초기 로딩: 친구의 UID를 찾고 메모 목록을 불러옴
   useEffect(() => {
     if (!currentUser || !userProfile) return
-    loadMemos()
+    
+    async function init() {
+      setLoading(true)
+      try {
+        let friendUid = null
+        if (userProfile.friendId) {
+          const qFriend = query(
+            collection(db, 'users'),
+            where('userId', '==', userProfile.friendId)
+          )
+          const snapFriend = await getDocs(qFriend)
+          if (!snapFriend.empty) {
+            friendUid = snapFriend.docs[0].id
+          }
+        }
+        await loadMemos(friendUid)
+      } catch (err) {
+        console.error("초기 로딩 실패:", err)
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    init()
   }, [currentUser, userProfile])
 
-  async function loadMemos() {
-    setLoading(true)
+  async function loadMemos(fUid = null) {
     try {
+      const ids = [currentUser.uid, fUid].filter(Boolean)
       const q = query(
         collection(db, 'memos'),
-        where('authorId', 'in', [currentUser.uid, userProfile.friendId].filter(Boolean))
+        where('authorId', 'in', ids)
       )
       const snap = await getDocs(q)
       const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
       
+      // 정렬: 최신순 (createdAt이 없으면 현재 시간으로 간주)
       data.sort((a, b) => {
-        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0)
-        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0)
-        return dateB - dateA
+        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : Date.now()
+        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : Date.now()
+        return timeB - timeA
       })
       
       setMemos(data)
     } catch (err) {
       console.error('메모 로드 실패:', err)
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -61,7 +84,15 @@ export default function ViewTab() {
       }
       await addDoc(collection(db, 'memos'), newDoc)
       setContent('')
-      loadMemos() // 목록 새로고침
+      
+      // 목록 새로고침을 위해 친구 UID 다시 확인
+      let fUid = null
+      if (userProfile.friendId) {
+        const qF = query(collection(db, 'users'), where('userId', '==', userProfile.friendId))
+        const sF = await getDocs(qF)
+        if (!sF.empty) fUid = sF.docs[0].id
+      }
+      await loadMemos(fUid)
     } catch (err) {
       console.error("저장 실패:", err)
     } finally {
