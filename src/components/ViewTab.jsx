@@ -26,14 +26,21 @@ export default function ViewTab() {
     setLoading(true)
     try {
       // ⭐ 핵심: 나의 메모 + 친구의 메모만 가져오기
-      // Firestore OR 쿼리는 'in' 연산자로 처리
       const q = query(
         collection(db, 'memos'),
-        where('authorId', 'in', [currentUser.uid, userProfile.friendId].filter(Boolean)),
-        orderBy('createdAt', 'desc')
+        where('authorId', 'in', [currentUser.uid, userProfile.friendId].filter(Boolean))
       )
       const snap = await getDocs(q)
-      setMemos(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      
+      // 인덱스 설정 없이도 작동하도록 JS에서 내림차순 정렬
+      data.sort((a, b) => {
+        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(0);
+        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(0);
+        return dateB - dateA;
+      })
+      
+      setMemos(data)
     } catch (err) {
       console.error('메모 로드 실패:', err)
     } finally {

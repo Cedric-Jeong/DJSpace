@@ -29,19 +29,15 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-diary-cream flex flex-col max-w-md mx-auto">
       {/* 헤더 */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-diary-green/5 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white/80 backdrop-blur-md border-b border-diary-green/5 px-4 py-5 flex items-center justify-between sticky top-0 z-10">
         <div>
-          <h1 className="font-bold text-diary-green text-lg flex items-center gap-2">
-            <span>우리들의 공간</span>
-            <span className="text-sm font-normal text-diary-brown">Space of Us</span>
+          <h1 className="font-bold text-diary-green text-xl tracking-tight">
+            우리들의 공간
           </h1>
-          <p className="text-xs text-diary-green/60">
-            안녕하세요, {userProfile?.name || '친구'}님
-          </p>
         </div>
         <button
           onClick={handleLogout}
-          className="text-diary-green/40 text-xs hover:text-diary-brown transition-colors"
+          className="text-diary-green/40 text-xs hover:text-diary-brown transition-colors font-medium"
         >
           로그아웃
         </button>

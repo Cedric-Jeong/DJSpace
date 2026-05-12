@@ -21,14 +21,21 @@ export default function RoutineTab() {
   }, [currentUser])
 
   async function loadRoutines() {
-    const q = query(
-      collection(db, 'routines'),
-      where('userId', '==', currentUser.uid),
-      orderBy('createdAt', 'asc')
-    )
-    const snap = await getDocs(q)
-    setRoutines(snap.docs.map(d => ({ id: d.id, ...d.data() })))
-    setLoading(false)
+    try {
+      const q = query(
+        collection(db, 'routines'),
+        where('userId', '==', currentUser.uid)
+      )
+      const snap = await getDocs(q)
+      // Firestore 인덱스 설정 없이도 작동하도록 JS에서 정렬
+      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }))
+      data.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0))
+      setRoutines(data)
+    } catch (err) {
+      console.error("루틴 로드 실패:", err)
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function addRoutine() {
