@@ -66,20 +66,20 @@ export default function ViewTab() {
   }
 
   if (loading) return (
-    <div className="flex items-center justify-center h-40 text-gray-400 text-sm">
-      불러오는 중...
+    <div className="flex items-center justify-center h-40 text-diary-green/40 text-sm">
+      우편함을 확인하는 중... 🌿
     </div>
   )
 
   if (memos.length === 0) return (
-    <div className="flex flex-col items-center justify-center h-40 gap-2">
-      <span className="text-4xl">📭</span>
-      <p className="text-gray-400 text-sm">아직 일기가 없어요</p>
+    <div className="flex flex-col items-center justify-center h-40 gap-3">
+      <span className="text-4xl">🍃</span>
+      <p className="text-diary-green/30 text-sm font-medium">아직 채워진 이야기가 없어요</p>
     </div>
   )
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="p-4 space-y-6">
       {memos.map(memo => {
         const isMe = memo.authorId === currentUser.uid
         const dateStr = memo.date?.toDate
@@ -87,54 +87,58 @@ export default function ViewTab() {
           : ''
 
         return (
-          <div key={memo.id} className="bg-white rounded-2xl shadow-sm overflow-hidden">
+          <div key={memo.id} className="bg-white rounded-3xl shadow-sm overflow-hidden border border-diary-green/5">
             {/* 메모 헤더 */}
             <div className={`px-4 py-3 flex items-center justify-between ${
-              isMe ? 'bg-diary-peach' : 'bg-blue-50'
+              isMe ? 'bg-diary-green/10' : 'bg-diary-brown/10'
             }`}>
               <div className="flex items-center gap-2">
-                <span className="text-lg">{isMe ? '🌸' : '💙'}</span>
-                <span className="font-medium text-sm text-diary-dark">
+                <span className="text-lg">{isMe ? '🌱' : '🪵'}</span>
+                <span className={`font-bold text-xs uppercase tracking-tighter ${
+                  isMe ? 'text-diary-green' : 'text-diary-brown'
+                }`}>
                   {memo.authorName}
                 </span>
               </div>
-              <span className="text-xs text-gray-400">{dateStr}</span>
+              <span className="text-[10px] font-bold text-diary-green/30">{dateStr}</span>
             </div>
 
             {/* 메모 본문 */}
-            <div className="px-4 py-4">
-              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+            <div className="px-5 py-5">
+              <p className="text-sm text-diary-dark leading-relaxed whitespace-pre-wrap font-medium">
                 {memo.content}
               </p>
             </div>
 
             {/* 댓글 목록 */}
             {(memo.comments || []).length > 0 && (
-              <div className="border-t border-gray-50 px-4 py-3 space-y-2">
+              <div className="bg-diary-cream/50 px-5 py-4 space-y-3">
                 {memo.comments.map((c, i) => (
-                  <div key={i} className="flex gap-2">
-                    <span className="text-xs text-diary-rose font-medium shrink-0">
+                  <div key={i} className="flex flex-col gap-0.5">
+                    <span className={`text-[10px] font-bold ${
+                      c.authorId === currentUser.uid ? 'text-diary-green' : 'text-diary-brown'
+                    }`}>
                       {c.authorName}
                     </span>
-                    <span className="text-xs text-gray-600">{c.text}</span>
+                    <span className="text-xs text-diary-dark/80 leading-snug">{c.text}</span>
                   </div>
                 ))}
               </div>
             )}
 
             {/* 댓글 입력 */}
-            <div className="border-t border-gray-50 px-4 py-3 flex gap-2">
+            <div className="px-4 py-3 flex gap-2 bg-white">
               <input
                 type="text"
                 value={commentMap[memo.id] || ''}
                 onChange={e => setCommentMap(prev => ({ ...prev, [memo.id]: e.target.value }))}
                 onKeyDown={e => e.key === 'Enter' && addComment(memo.id)}
-                placeholder="댓글 남기기..."
-                className="flex-1 text-xs text-gray-600 focus:outline-none placeholder-gray-300"
+                placeholder="따뜻한 한마디를 남겨주세요..."
+                className="flex-1 text-xs text-diary-dark focus:outline-none placeholder-diary-green/20 py-1"
               />
               <button
                 onClick={() => addComment(memo.id)}
-                className="text-diary-rose text-xs font-medium hover:text-diary-dark transition-colors"
+                className="text-diary-green text-xs font-bold hover:text-diary-brown transition-colors px-2"
               >
                 전송
               </button>

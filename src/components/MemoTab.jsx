@@ -82,34 +82,34 @@ export default function MemoTab() {
       </div>
 
       {/* 선택 날짜 표시 */}
-      <div className="bg-diary-peach rounded-2xl px-4 py-3">
-        <p className="text-diary-dark font-medium text-sm">{dateStr}</p>
+      <div className="bg-diary-green/5 rounded-2xl px-4 py-3 border border-diary-green/5">
+        <p className="text-diary-green font-semibold text-sm">{dateStr}</p>
       </div>
 
       {/* 일기 작성 */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm">
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-diary-green/5">
         <textarea
           value={content}
           onChange={e => setContent(e.target.value)}
-          placeholder="오늘 있었던 일을 적어봐요 💭"
+          placeholder="오늘의 조각을 남겨보세요... 🌿"
           rows={7}
-          className="w-full text-sm text-gray-700 resize-none focus:outline-none leading-relaxed placeholder-gray-300"
+          className="w-full text-sm text-diary-dark resize-none focus:outline-none leading-relaxed placeholder-diary-green/20"
         />
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-          <span className="text-xs text-gray-300">{content.length}자</span>
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-diary-green/5">
+          <span className="text-xs text-diary-green/20">{content.length}자</span>
           <button
             onClick={saveMemo}
             disabled={saving || !content.trim()}
-            className="bg-diary-pink hover:bg-diary-rose disabled:opacity-40 text-white text-sm font-medium px-5 py-2 rounded-xl transition-colors"
+            className="bg-diary-green hover:bg-diary-leaf disabled:opacity-40 text-white text-sm font-medium px-5 py-2 rounded-xl transition-all shadow-sm active:scale-95"
           >
-            {saving ? '저장 중...' : '저장하기'}
+            {saving ? '기록 중...' : '기록하기'}
           </button>
         </div>
       </div>
 
       {savedMsg && (
-        <div className="text-center text-diary-rose text-sm animate-pulse">
-          {savedMsg}
+        <div className="text-center text-diary-brown text-sm font-medium animate-pulse">
+          {savedMsg.replace('💕', '✨')}
         </div>
       )}
     </div>

@@ -27,18 +27,21 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col max-w-md mx-auto">
+    <div className="min-h-screen bg-diary-cream flex flex-col max-w-md mx-auto">
       {/* 헤더 */}
-      <header className="bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
+      <header className="bg-white/80 backdrop-blur-md border-b border-diary-green/5 px-4 py-4 flex items-center justify-between sticky top-0 z-10">
         <div>
-          <h1 className="font-bold text-diary-dark text-lg">교환 일기 📖</h1>
-          <p className="text-xs text-gray-400">
+          <h1 className="font-bold text-diary-green text-lg flex items-center gap-2">
+            <span>우리들의 공간</span>
+            <span className="text-sm font-normal text-diary-brown">Space of Us</span>
+          </h1>
+          <p className="text-xs text-diary-green/60">
             안녕하세요, {userProfile?.name || '친구'}님
           </p>
         </div>
         <button
           onClick={handleLogout}
-          className="text-gray-400 text-sm hover:text-gray-600 transition-colors"
+          className="text-diary-green/40 text-xs hover:text-diary-brown transition-colors"
         >
           로그아웃
         </button>
@@ -52,23 +55,23 @@ export default function Dashboard() {
       </main>
 
       {/* 하단 탭 바 */}
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-100 flex">
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/90 backdrop-blur-md border-t border-diary-green/5 flex shadow-lg shadow-diary-green/5">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex-1 py-4 flex flex-col items-center gap-1 transition-colors ${
+            className={`flex-1 py-4 flex flex-col items-center gap-1 transition-all ${
               activeTab === tab.id
-                ? 'text-diary-rose'
-                : 'text-gray-400 hover:text-gray-600'
+                ? 'text-diary-green transform scale-105'
+                : 'text-diary-green/30 hover:text-diary-green/60'
             }`}
           >
             <span className="text-xl">{tab.icon}</span>
-            <span className={`text-xs font-medium ${activeTab === tab.id ? 'text-diary-rose' : ''}`}>
+            <span className={`text-[10px] font-bold uppercase tracking-wider ${activeTab === tab.id ? 'text-diary-green' : ''}`}>
               {tab.label}
             </span>
             {activeTab === tab.id && (
-              <span className="absolute bottom-0 w-12 h-0.5 bg-diary-rose rounded-full" />
+              <span className="absolute bottom-1 w-1 h-1 bg-diary-brown rounded-full" />
             )}
           </button>
         ))}

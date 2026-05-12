@@ -63,27 +63,27 @@ export default function RoutineTab() {
           <span className="text-sm font-medium text-diary-dark">오늘의 루틴</span>
           <span className="text-xs text-gray-400">{doneCount} / {routines.length}</span>
         </div>
-        <div className="w-full bg-gray-100 rounded-full h-2">
+        <div className="w-full bg-diary-green/5 rounded-full h-2">
           <div
-            className="bg-diary-pink h-2 rounded-full transition-all duration-500"
+            className="bg-diary-green h-2 rounded-full transition-all duration-500"
             style={{ width: routines.length ? `${(doneCount / routines.length) * 100}%` : '0%' }}
           />
         </div>
       </div>
 
       {/* 루틴 추가 */}
-      <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-2">
+      <div className="bg-white rounded-2xl p-4 shadow-sm flex gap-2 border border-diary-green/5">
         <input
           type="text"
           value={newName}
           onChange={e => setNewName(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && addRoutine()}
-          placeholder="새 루틴 추가..."
-          className="flex-1 text-sm focus:outline-none placeholder-gray-300 text-gray-700"
+          placeholder="새로운 습관을 심어보세요... 🌱"
+          className="flex-1 text-sm focus:outline-none placeholder-diary-green/20 text-diary-dark"
         />
         <button
           onClick={addRoutine}
-          className="bg-diary-pink text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-diary-rose transition-colors"
+          className="bg-diary-green text-white text-sm font-medium px-4 py-2 rounded-xl hover:bg-diary-leaf transition-all shadow-sm active:scale-95"
         >
           추가
         </button>
@@ -91,32 +91,32 @@ export default function RoutineTab() {
 
       {/* 루틴 목록 */}
       {loading ? (
-        <p className="text-center text-gray-400 text-sm">불러오는 중...</p>
+        <p className="text-center text-diary-green/40 text-sm">숲을 가꾸는 중...</p>
       ) : (
         <div className="space-y-2">
           {routines.map(routine => (
             <div
               key={routine.id}
-              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3"
+              className="bg-white rounded-2xl px-4 py-3 shadow-sm flex items-center gap-3 border border-diary-green/5"
             >
               <button
                 onClick={() => toggleDone(routine.id, routine.done)}
                 className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 transition-all ${
                   routine.done
-                    ? 'bg-diary-pink border-diary-pink text-white'
-                    : 'border-gray-200 hover:border-diary-pink'
+                    ? 'bg-diary-green border-diary-green text-white'
+                    : 'border-diary-green/10 hover:border-diary-green/40'
                 }`}
               >
                 {routine.done && <span className="text-xs">✓</span>}
               </button>
               <span className={`flex-1 text-sm ${
-                routine.done ? 'line-through text-gray-300' : 'text-gray-700'
+                routine.done ? 'line-through text-diary-green/20' : 'text-diary-dark font-medium'
               }`}>
                 {routine.name}
               </span>
               <button
                 onClick={() => deleteRoutine(routine.id)}
-                className="text-gray-200 hover:text-red-300 transition-colors text-lg leading-none"
+                className="text-diary-green/10 hover:text-red-400 transition-colors text-lg leading-none"
               >
                 ×
               </button>
@@ -124,8 +124,8 @@ export default function RoutineTab() {
           ))}
 
           {routines.length === 0 && (
-            <div className="text-center py-8 text-gray-300 text-sm">
-              루틴을 추가해보세요 ✨
+            <div className="text-center py-8 text-diary-green/20 text-sm">
+              작은 습관부터 시작해볼까요? 🍃
             </div>
           )}
         </div>
